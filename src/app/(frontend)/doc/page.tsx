@@ -1,12 +1,26 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
+import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { getDocsNav } from '@/components/Docs/getDocsNav'
 
+const DOC_DESCRIPTION =
+  'Learn how to build pricing templates, capture leads, embed quote forms, and track conversions with Quotespan.'
+
 export const metadata: Metadata = {
-  title: 'Quotespan Documentation',
-  description:
-    'Learn how to build templates, capture leads, embed quote forms, and track conversions with Quotespan.',
+  title: 'Documentation — Quotespan',
+  description: DOC_DESCRIPTION,
+  openGraph: mergeOpenGraph({
+    title: 'Documentation — Quotespan',
+    description: DOC_DESCRIPTION,
+    url: '/doc',
+    type: 'website',
+  }),
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Documentation — Quotespan',
+    description: DOC_DESCRIPTION,
+  },
 }
 
 export default async function DocIndexPage() {

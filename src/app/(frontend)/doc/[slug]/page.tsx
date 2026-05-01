@@ -6,6 +6,8 @@ import Link from 'next/link'
 
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
+import { getServerSideURL } from '@/utilities/getURL'
+import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 
 import RichText from '@/components/RichText'
 import { getDocsNav } from '@/components/Docs/getDocsNav'
@@ -48,9 +50,27 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
   const { slug } = await params
   const doc = await queryDocBySlug(slug)
   if (!doc) return { title: 'Not found' }
+
+  const SITE_URL = getServerSideURL()
+  const title = `${doc.title} — Quotespan Docs`
+  const description =
+    doc.excerpt ??
+    'Learn how to use Quotespan to build pricing templates, capture leads, and send instant quotes.'
+
   return {
-    title: `${doc.title} — Quotespan Docs`,
-    description: doc.excerpt ?? undefined,
+    title,
+    description,
+    openGraph: mergeOpenGraph({
+      title,
+      description,
+      url: `${SITE_URL}/doc/${slug}`,
+      type: 'article',
+    }),
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
   }
 }
 

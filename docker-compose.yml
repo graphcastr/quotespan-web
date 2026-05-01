@@ -2,14 +2,17 @@ version: '3'
 
 services:
   payload:
-    image: node:18-alpine
+    image: node:22-alpine
     ports:
       - '3000:3000'
     volumes:
       - .:/home/node/app
       - node_modules:/home/node/app/node_modules
     working_dir: /home/node/app/
-    command: sh -c "yarn install && yarn dev"
+    # Turbopack panics ("Next.js package not found") when traversing pnpm's
+    # symlinked node_modules across the docker volume boundary. Use webpack
+    # in the container instead.
+    command: sh -c "corepack enable && pnpm install && pnpm exec next dev --webpack"
     depends_on:
       - mongo
     env_file:
@@ -18,7 +21,9 @@ services:
   mongo:
     image: mongo:latest
     ports:
-      - '27017:27017'
+      # Host 27017 is already used by another local mongo container
+      # (`quotespan-mongo`). Expose this one on 27018 instead.
+      - '27018:27017'
     command:
       - --storageEngine=wiredTiger
     volumes:
