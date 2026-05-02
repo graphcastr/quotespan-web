@@ -1,5 +1,20 @@
 import type { CollectionConfig } from 'payload'
 
+import {
+  BlockquoteFeature,
+  BoldFeature,
+  FixedToolbarFeature,
+  HeadingFeature,
+  InlineToolbarFeature,
+  ItalicFeature,
+  LinkFeature,
+  ParagraphFeature,
+  UnderlineFeature,
+  UnorderedListFeature,
+  OrderedListFeature,
+  lexicalEditor,
+} from '@payloadcms/richtext-lexical'
+
 import { authenticated } from '../../access/authenticated'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
 import { slugField } from 'payload'
@@ -79,6 +94,21 @@ export const Docs: CollectionConfig<'docs'> = {
       name: 'content',
       type: 'richText',
       required: true,
+      editor: lexicalEditor({
+        features: [
+          ParagraphFeature(),
+          HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
+          UnorderedListFeature(),
+          OrderedListFeature(),
+          BlockquoteFeature(),
+          BoldFeature(),
+          ItalicFeature(),
+          UnderlineFeature(),
+          LinkFeature({ enabledCollections: ['pages', 'posts', 'docs'] }),
+          FixedToolbarFeature(),
+          InlineToolbarFeature(),
+        ],
+      }),
     },
     {
       name: 'publishedAt',
