@@ -13,24 +13,12 @@ services:
     # symlinked node_modules across the docker volume boundary. Use webpack
     # in the container instead.
     command: sh -c "corepack enable && pnpm install && pnpm exec next dev --webpack"
-    depends_on:
-      - mongo
     env_file:
       - .env
 
-  mongo:
-    image: mongo:latest
-    ports:
-      # Host 27017 is already used by another local mongo container
-      # (`quotespan-mongo`). Expose this one on 27018 instead.
-      - '27018:27017'
-    command:
-      - --storageEngine=wiredTiger
-    volumes:
-      - data:/data/db
-    logging:
-      driver: none
+  # Database is the managed Postgres on 188.245.208.143:5486 (set via DATABASE_URL
+  # in .env). No local DB container is provisioned. If you need to run fully
+  # offline, add a `postgres:16-alpine` service and point DATABASE_URL at it.
 
 volumes:
-  data:
   node_modules:
